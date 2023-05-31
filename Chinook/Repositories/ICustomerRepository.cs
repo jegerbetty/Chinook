@@ -10,8 +10,8 @@ namespace Chinook.Repositories
     public interface ICustomerRepository
     {
         public List<Customer> GetAllCustomers(); //returns all customers. display: Id, firstname, lastname, country, postal cost, phone number, email
-        public Customer GetCustomer(int id); //Returns one customer by Id. get one customer by Id. display: Id, firstname, lastname, country, postal cost, phone number, email
-        public Customer GetCustomer(string name); //get one customer by name (HINT: LIKE keyword can help for partial matches). display: Id, firstname, lastname, country, postal cost, phone number, email
+        public Customer GetCustomerByID(int id); //Returns one customer by Id. get one customer by Id. display: Id, firstname, lastname, country, postal cost, phone number, email
+        public Customer GetCustomerByName(string partialname); //get one customer by name (HINT: LIKE keyword can help for partial matches). display: Id, firstname, lastname, country, postal cost, phone number, email
         public List<Customer> GetAllCustomers(int limit, int offset); //return a page of customers from the database. This should take in limit and offset as parameters. display: Id, firstname, lastname, country, postal cost, phone number, email
         public bool AddNewCustomer(Customer customer); //add a new customer to the database. add: Id, firstname, lastname, country, postal cost, phone number, email
         public bool UpdateCustomer(Customer customer); //update an existing customer
