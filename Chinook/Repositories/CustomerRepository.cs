@@ -46,8 +46,6 @@ namespace Chinook.Repositories
                                 tempCustomer.Email = sqlDataReader.GetString(6);
                                 //Add to the collection list
                                 customerList.Add(tempCustomer);
-
-
                             }
                         }
                     } 
@@ -55,7 +53,7 @@ namespace Chinook.Repositories
             }
             catch (Exception ex) 
             {
-                Console.WriteLine(ex.Message, ex);
+                Console.WriteLine(ex.Message);
             }
             return customerList;
         }
@@ -97,7 +95,7 @@ namespace Chinook.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message, ex);
+                Console.WriteLine(ex.Message);
             }
             return customer;
         }
@@ -140,13 +138,57 @@ namespace Chinook.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message, ex);
+                Console.WriteLine(ex.Message);
             }
             return customer;
         }
         public bool AddNewCustomer(Customer customer)
         {
-            throw new NotImplementedException();
+            bool success = false;
+            string sql = "INSERT INTO CUSTOMER(CustomerID, FirstName, LastName, Country, PostalCode, Phone, Email)" +
+                         "VALUES(@CustomerID, @FirstName, @LastName, @Country, @PostalCode, @Phone, @Email";
+            try
+            {
+                using (SqlConnection sqlConnection = new SqlConnection(ConnectionHelper.GetConnectionString()))
+                {
+                    sqlConnection.Open();
+
+                    using (SqlCommand command = new SqlCommand(sql, sqlConnection))
+                    {
+                        command.Parameters.AddWithValue("@CustomerID", customer.CustomerId);
+                        command.Parameters.AddWithValue("@FirstName", customer.FirstName);
+                        command.Parameters.AddWithValue("@LastName", customer.LastName);
+                        command.Parameters.AddWithValue("@Country", customer.Country);
+                        command.Parameters.AddWithValue("@PostalCode", customer.PostalCode);
+                        command.Parameters.AddWithValue("@Phone", customer.Phone);
+                        command.Parameters.AddWithValue("@Email", customer.Email); 
+
+                        success = command.ExecuteNonQuery() > 0 ? true : false; //to execute the transaction for the insert command
+                        
+                        using (SqlDataReader sqlDataReader = command.ExecuteReader())
+                        {
+                            while (sqlDataReader.Read())
+                            {
+
+                                Customer tempCustomer = new Customer();
+
+                                tempCustomer.CustomerId = sqlDataReader.GetInt32(0);
+                                tempCustomer.FirstName = sqlDataReader.GetString(1);
+                                tempCustomer.LastName = sqlDataReader.GetString(2);
+                                tempCustomer.Country = sqlDataReader.GetString(3);
+                                tempCustomer.PostalCode = sqlDataReader.GetString(4);
+                                tempCustomer.Phone = sqlDataReader.GetString(5);
+                                tempCustomer.Email = sqlDataReader.GetString(6);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return success;
         }
 
         public List<Customer> GetCustomerPage(int offset, int limit)
@@ -182,8 +224,6 @@ namespace Chinook.Repositories
                                 tempCustomer.Email = sqlDataReader.GetString(6);
                                 
                                 customerList.Add(tempCustomer);
-
-
                             }
                         }
                     }
@@ -191,7 +231,7 @@ namespace Chinook.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message, ex);
+                Console.WriteLine(ex.Message);
             }
             return customerList;
         }
