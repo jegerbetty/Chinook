@@ -9,9 +9,14 @@ static void ReadAllCustomers(ICustomerRepository repository)
     ReadCustomers(repository.GetAllCustomers());
 }
 
-static void ReadOneCustomer(ICustomerRepository repository) 
+static void ReadOneCustomerByID(ICustomerRepository repository) 
 {
-    ReadCustomer(repository.GetCustomer("2"));
+    ReadCustomer(repository.GetCustomerByID(2));
+}
+
+static void ReadOneCustomerByName(ICustomerRepository repository)
+{
+    ReadCustomer(repository.GetCustomerByName("Wilson"));
 }
 
 static void AddRecord (ICustomerRepository repository) 
