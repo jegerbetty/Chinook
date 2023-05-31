@@ -164,23 +164,6 @@ namespace Chinook.Repositories
                         command.Parameters.AddWithValue("@Email", customer.Email); 
 
                         success = command.ExecuteNonQuery() > 0 ? true : false; //to execute the transaction for the insert command
-                        
-                        using (SqlDataReader sqlDataReader = command.ExecuteReader())
-                        {
-                            while (sqlDataReader.Read())
-                            {
-
-                                Customer tempCustomer = new Customer();
-
-                                tempCustomer.CustomerId = sqlDataReader.GetInt32(0);
-                                tempCustomer.FirstName = sqlDataReader.GetString(1);
-                                tempCustomer.LastName = sqlDataReader.GetString(2);
-                                tempCustomer.Country = sqlDataReader.GetString(3);
-                                tempCustomer.PostalCode = sqlDataReader.GetString(4);
-                                tempCustomer.Phone = sqlDataReader.GetString(5);
-                                tempCustomer.Email = sqlDataReader.GetString(6);
-                            }
-                        }
                     }
                 }
             }
@@ -238,7 +221,41 @@ namespace Chinook.Repositories
 
         public bool UpdateCustomer(Customer customer)
         {
-            throw new NotImplementedException();
+            bool success = false;
+            string sql = "UPDATE CUSTOMER SET " +  
+                         "FirstName=@FirstName, " + 
+                         "LastName=@LastName, " + 
+                         "Country=@Country, " + 
+                         "PostalCode=@PostalCode, " + 
+                         "Phone=@Phone, " + 
+                         "Email=@Email" +
+                         "WHERE CustomerID=@CustomerID";
+
+            try
+            {
+                using (SqlConnection sqlConnection = new SqlConnection(ConnectionHelper.GetConnectionString()))
+                {
+                    sqlConnection.Open();
+
+                    using (SqlCommand command = new SqlCommand(sql, sqlConnection))
+                    {
+                        command.Parameters.AddWithValue("@CustomerID", customer.CustomerId);
+                        command.Parameters.AddWithValue("@FirstName", customer.FirstName);
+                        command.Parameters.AddWithValue("@LastName", customer.LastName);
+                        command.Parameters.AddWithValue("@Country", customer.Country);
+                        command.Parameters.AddWithValue("@PostalCode", customer.PostalCode);
+                        command.Parameters.AddWithValue("@Phone", customer.Phone);
+                        command.Parameters.AddWithValue("@Email", customer.Email);
+
+                        success = command.ExecuteNonQuery() > 0 ? true : false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return success;
         }
     }
 }
