@@ -4,9 +4,11 @@ using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Numerics;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Chinook.Repositories
@@ -256,6 +258,44 @@ namespace Chinook.Repositories
                 Console.WriteLine(ex.Message);
             }
             return success;
+        }
+
+        public List<CustomerCountry> CustomersPerCountry() 
+        { 
+            List<CustomerCountry> customerCountryList = new List<CustomerCountry>();
+
+            string sql = "SELECT COUNT(Country) AS 'Count', Country " +
+                         "FROM CUSTOMER " +
+                         "GROUP BY COUNTRY " +
+                         "ORDER BY 'Count' DESC";
+            try
+            {
+                using (SqlConnection sqlConnection = new SqlConnection(ConnectionHelper.GetConnectionString()))
+                {
+                    sqlConnection.Open(); 
+                   
+                    using (SqlCommand command = new SqlCommand(sql, sqlConnection))
+                    {
+                        using (SqlDataReader sqlDataReader = command.ExecuteReader())
+                        {
+                            while (sqlDataReader.Read())
+                            {
+                                CustomerCountry tempCustomerCountry = new CustomerCountry();
+                               
+                                tempCustomerCountry.Country = sqlDataReader.GetString(0);
+                                tempCustomerCountry.Count = sqlDataReader.GetInt32(1);
+
+                                customerCountryList.Add(tempCustomerCountry);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return customerCountryList;
         }
     }
 }
