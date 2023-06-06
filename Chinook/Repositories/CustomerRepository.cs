@@ -144,7 +144,53 @@ namespace Chinook.Repositories
             }
             return customer;
         }
-        public bool AddNewCustomer(Customer customer)
+
+        public List<Customer> GetCustomerPage(int offset, int limit) //return a page of customers from the database. This should take in limit and offset as parameters. display: Id, firstname, lastname, country, postal cost, phone number, email
+        {
+            List<Customer> customerList = new List<Customer>();
+
+            string sql = "SELECT CustomerID, FirstName, LastName, Country, PostalCode, Phone, Email" +
+                         "FROM CUSTOMER" +
+                         "OFFSET @offset ROWS" +
+                         "FETCH NEXT @limit ROWS ONLY";
+            try
+            {
+                using (SqlConnection sqlConnection = new SqlConnection(ConnectionHelper.GetConnectionString()))
+                {
+                    sqlConnection.Open();
+
+                    using (SqlCommand command = new SqlCommand(sql, sqlConnection))
+                    {
+                        command.Parameters.AddWithValue("@offset", offset);
+                        command.Parameters.AddWithValue("@limit", limit);
+
+                        using (SqlDataReader sqlDataReader = command.ExecuteReader())
+                        {
+                            while (sqlDataReader.Read())
+                            {
+                                Customer tempCustomer = new Customer();
+                                tempCustomer.CustomerId = sqlDataReader.GetInt32(0);
+                                tempCustomer.FirstName = sqlDataReader.GetString(1);
+                                tempCustomer.LastName = sqlDataReader.GetString(2);
+                                tempCustomer.Country = sqlDataReader.GetString(3);
+                                tempCustomer.PostalCode = sqlDataReader.GetString(4);
+                                tempCustomer.Phone = sqlDataReader.GetString(5);
+                                tempCustomer.Email = sqlDataReader.GetString(6);
+
+                                customerList.Add(tempCustomer);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return customerList;
+        }
+
+        public bool AddNewCustomer(Customer customer) //add a new customer to the database. add: Id, firstname, lastname, country, postal cost, phone number, email
         {
             bool success = false;
             string sql = "INSERT INTO CUSTOMER(FirstName, LastName, Country, PostalCode, Phone, Email)" + //CustomerID: removed as CustomerID is autoincremented in database 
@@ -157,7 +203,7 @@ namespace Chinook.Repositories
 
                     using (SqlCommand command = new SqlCommand(sql, sqlConnection))
                     {
-                        //command.Parameters.AddWithValue("@CustomerID", customer.CustomerId);
+                        //command.Parameters.AddWithValue("@CustomerID", customer.CustomerId); removed as CustomerID is autoincremented in database 
                         command.Parameters.AddWithValue("@FirstName", customer.FirstName);
                         command.Parameters.AddWithValue("@LastName", customer.LastName);
                         command.Parameters.AddWithValue("@Country", customer.Country);
@@ -176,60 +222,15 @@ namespace Chinook.Repositories
             return success;
         }
 
-        public List<Customer> GetCustomerPage(int offset, int limit)
-        {
-            List<Customer> customerList = new List<Customer>();
-
-            string sql = "SELECT CustomerID, FirstName, LastName, Country, PostalCode, Phone, Email" +
-                         "FROM CUSTOMER" +
-                         "OFFSET @offset ROWS" + 
-                         "FETCH NEXT @limit ROWS ONLY";
-            try
-            {
-                using (SqlConnection sqlConnection = new SqlConnection(ConnectionHelper.GetConnectionString()))
-                {
-                    sqlConnection.Open(); 
-
-                    using (SqlCommand command = new SqlCommand(sql, sqlConnection))
-                    {
-                        command.Parameters.AddWithValue("@offset", offset);
-                        command.Parameters.AddWithValue("@limit", limit);
-                        
-                        using (SqlDataReader sqlDataReader = command.ExecuteReader())
-                        {
-                            while (sqlDataReader.Read())
-                            {
-                                Customer tempCustomer = new Customer();
-                                tempCustomer.CustomerId = sqlDataReader.GetInt32(0);
-                                tempCustomer.FirstName = sqlDataReader.GetString(1);
-                                tempCustomer.LastName = sqlDataReader.GetString(2);
-                                tempCustomer.Country = sqlDataReader.GetString(3);
-                                tempCustomer.PostalCode = sqlDataReader.GetString(4);
-                                tempCustomer.Phone = sqlDataReader.GetString(5);
-                                tempCustomer.Email = sqlDataReader.GetString(6);
-                                
-                                customerList.Add(tempCustomer);
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            return customerList;
-        }
-
-        public bool UpdateCustomer(Customer customer)
+        public bool UpdateCustomer(Customer customer) //update an existing customer
         {
             bool success = false;
-            string sql = "UPDATE CUSTOMER SET " +  
-                         "FirstName=@FirstName, " + 
-                         "LastName=@LastName, " + 
-                         "Country=@Country, " + 
-                         "PostalCode=@PostalCode, " + 
-                         "Phone=@Phone, " + 
+            string sql = "UPDATE CUSTOMER SET " +
+                         "FirstName=@FirstName, " +
+                         "LastName=@LastName, " +
+                         "Country=@Country, " +
+                         "PostalCode=@PostalCode, " +
+                         "Phone=@Phone, " +
                          "Email=@Email" +
                          "WHERE CustomerID=@CustomerID";
 
@@ -260,7 +261,7 @@ namespace Chinook.Repositories
             return success;
         }
 
-        public List<CustomerCountry> CustomersPerCountry() 
+        public List<CustomerCountry> CustomersPerCountry() //make a seperate class, CustomerCountry (add to Models folder): return the number of customers in each country, ordered descending (high to low)
         { 
             List<CustomerCountry> customerCountryList = new List<CustomerCountry>();
 
@@ -297,7 +298,7 @@ namespace Chinook.Repositories
             }
             return customerCountryList;
         }
-        public List<CustomerSpender> CustomersHighestSpenders() 
+        public List<CustomerSpender> CustomersHighestSpenders() //make a seperate class, CustomerSpender (add to Models folder): customers who are the highest spenders (total in invoice table is the largest), ordered descending
         {
             List<CustomerSpender> customerSpenderList = new List<CustomerSpender>();
 
@@ -337,7 +338,7 @@ namespace Chinook.Repositories
             return customerSpenderList;
 
         }
-        public List<CustomerGenre> GetCustomerGenre(int customerId) 
+        public List<CustomerGenre> GetCustomerGenre(int customerId) //make a seperate class, CustomerGenre (add to Models folder): for a given customer, their most popular genre (in the case of a tie, display both). most popular = genre that corresponds to the most tracks from invoices associated to that customer
         {
             List<CustomerGenre> customerGenreList = new List<CustomerGenre>();
 

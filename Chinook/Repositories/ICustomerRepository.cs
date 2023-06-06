@@ -17,6 +17,6 @@ namespace Chinook.Repositories
         public bool UpdateCustomer(Customer customer); //update an existing customer
         public List<CustomerCountry> CustomersPerCountry(); //make a seperate class, CustomerCountry (add to Models folder): return the number of customers in each country, ordered descending (high to low)
         public List<CustomerSpender> CustomersHighestSpenders(); //make a seperate class, CustomerSpender (add to Models folder): customers who are the highest spenders (total in invoice table is the largest), ordered descending
-        public List<CustomerGenre> GetCustomerGenre(int id); //make a seperate class, CustomerGenre (add to Models folder): for a given customer, thier most popular genre (in the case of a tie, display both). most popular = genre that corresponds to the most tracks from invoices associated to that customer
+        public List<CustomerGenre> GetCustomerGenre(int id); //make a seperate class, CustomerGenre (add to Models folder): for a given customer, their most popular genre (in the case of a tie, display both). most popular = genre that corresponds to the most tracks from invoices associated to that customer
     }
 }
