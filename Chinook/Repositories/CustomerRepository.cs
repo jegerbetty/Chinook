@@ -147,8 +147,8 @@ namespace Chinook.Repositories
         public bool AddNewCustomer(Customer customer)
         {
             bool success = false;
-            string sql = "INSERT INTO CUSTOMER(CustomerID, FirstName, LastName, Country, PostalCode, Phone, Email)" +
-                         "VALUES(@CustomerID, @FirstName, @LastName, @Country, @PostalCode, @Phone, @Email";
+            string sql = "INSERT INTO CUSTOMER(FirstName, LastName, Country, PostalCode, Phone, Email)" + //CustomerID: removed as CustomerID is autoincremented in database 
+                         "VALUES(@FirstName, @LastName, @Country, @PostalCode, @Phone, @Email)"; //@CustomerID: removed as CustomerID is autoincremented in database 
             try
             {
                 using (SqlConnection sqlConnection = new SqlConnection(ConnectionHelper.GetConnectionString()))
@@ -157,7 +157,7 @@ namespace Chinook.Repositories
 
                     using (SqlCommand command = new SqlCommand(sql, sqlConnection))
                     {
-                        command.Parameters.AddWithValue("@CustomerID", customer.CustomerId);
+                        //command.Parameters.AddWithValue("@CustomerID", customer.CustomerId);
                         command.Parameters.AddWithValue("@FirstName", customer.FirstName);
                         command.Parameters.AddWithValue("@LastName", customer.LastName);
                         command.Parameters.AddWithValue("@Country", customer.Country);
@@ -169,7 +169,7 @@ namespace Chinook.Repositories
                     }
                 }
             }
-            catch (Exception ex)
+            catch (SqlException ex)
             {
                 Console.WriteLine(ex.Message);
             }

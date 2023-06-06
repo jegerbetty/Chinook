@@ -1,6 +1,8 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using Chinook.Models;
 using Chinook.Repositories;
+using System.Diagnostics.Metrics;
+using System.Numerics;
 
 Console.WriteLine("Hello, World!");
 
@@ -19,9 +21,25 @@ static void ReadOneCustomerByName(ICustomerRepository repository)
     ReadCustomer(repository.GetCustomerByName("Wilson"));
 }
 
-static void AddRecord (ICustomerRepository repository) 
+static void AddNewCustomer (ICustomerRepository repository)
 {
-    Customer customer = new Customer();
+    Customer addNewCustomer = new Customer();
+    {
+        string FirstName = "FirstName";
+        string LastName = "LastName";
+        string Country = "Country";
+        string PostalCode = "PostalCode";
+        string Phone = "Phone";
+        string Email = "Email";
+    };
+    if (repository.AddNewCustomer(addNewCustomer)) 
+    {
+        Console.WriteLine("Successfully inserted record");
+        ReadCustomer(repository.GetCustomerByName("LastName"));
+    } else 
+    {
+        Console.WriteLine("Not successful");
+    }
 }
 
 static void UpdateRecord (ICustomerRepository repository) 
