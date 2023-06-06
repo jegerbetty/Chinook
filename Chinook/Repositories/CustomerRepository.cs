@@ -337,5 +337,58 @@ namespace Chinook.Repositories
             return customerSpenderList;
 
         }
+        public List<CustomerGenre> GetCustomerGenre(int customerId) 
+        {
+            List<CustomerGenre> customerGenreList = new List<CustomerGenre>();
+
+            string sql = "WITH"+
+                         "Invoice_Details(InvoiceId, CustomerId, Total)" + 
+                         "AS" + 
+                         "(" +
+                         "SELECT TOP 1 InvoiceId, CustomerId, Total" + 
+                         "FROM Invoice" + 
+                         "WHERE CustomerId = @CustomerID" + 
+                         "ORDER BY Total DESC" +
+                         ")" +
+                         "select TOP 1 Customer.CustomerId, Customer.FirstName, Customer.LastName, Genre.Name" +
+                         "FROM InvoiceLine" +
+                         "INNER JOIN Invoice_Details ON Invoice_Details.InvoiceId = InvoiceLine.InvoiceId" +
+                         "INNER JOIN Customer ON Invoice_Details.CustomerId = Customer.CustomerId" +
+                         "INNER JOIN Track ON InvoiceLine.TrackId = Track.TrackId" +
+                         "INNER JOIN Genre ON Genre.GenreId = Track.GenreId" +
+                         "ORDER BY Track.Bytes DESC";
+            try
+            {
+                using (SqlConnection sqlConnection = new SqlConnection(ConnectionHelper.GetConnectionString()))
+                {
+                    sqlConnection.Open();
+
+                    using (SqlCommand command = new SqlCommand(sql, sqlConnection))
+                    {
+                        command.Parameters.AddWithValue("@CustomerID", customerId);
+
+                        using (SqlDataReader sqlDataReader = command.ExecuteReader())
+                        {
+                            while (sqlDataReader.Read())
+                            {
+                                CustomerGenre tempCustomerGenre = new CustomerGenre();
+
+                                tempCustomerGenre.CustomerId = sqlDataReader.GetInt32(0);
+                                tempCustomerGenre.FirstName = sqlDataReader.GetString(1);
+                                tempCustomerGenre.LastName = sqlDataReader.GetString(2);
+                                tempCustomerGenre.GenreName = sqlDataReader.GetString(3);
+
+                                customerGenreList.Add(tempCustomerGenre);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return customerGenreList;
+        }
     }
 }
