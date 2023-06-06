@@ -51,7 +51,7 @@ static void UpdateRecord (ICustomerRepository repository)
         Country = "Country",
         PostalCode = "PostalCode",
         Phone = "Phone",
-        Email = "Email",
+        Email = "Email"
     };
     if (repository.UpdateCustomer(updateCustomer))
     {
