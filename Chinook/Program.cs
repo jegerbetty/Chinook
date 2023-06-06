@@ -25,12 +25,12 @@ static void AddNewCustomer (ICustomerRepository repository)
 {
     Customer addNewCustomer = new Customer();
     {
-        string FirstName = "FirstName";
-        string LastName = "LastName";
-        string Country = "Country";
-        string PostalCode = "PostalCode";
-        string Phone = "Phone";
-        string Email = "Email";
+        FirstName = "FirstName";
+        LastName = "LastName";
+        Country = "Country";
+        PostalCode = "PostalCode";
+        Phone = "Phone";
+        Email = "Email";
     };
     if (repository.AddNewCustomer(addNewCustomer)) 
     {
@@ -42,9 +42,26 @@ static void AddNewCustomer (ICustomerRepository repository)
     }
 }
 
-static void UpdateRecord (ICustomerRepository repository) 
+static void UpdateCustomer (ICustomerRepository repository) 
 {
-    Customer customer = new Customer();
+    Customer updateCustomer = new Customer();
+    {
+        FirstName = "FirstName";
+        LastName = "LastName";
+        Country = "Country";
+        PostalCode = "PostalCode";
+        Phone = "Phone";
+        Email = "Email";
+    };
+    if (repository.UpdateCustomer(updateCustomer))
+    {
+        Console.WriteLine("Successfully updated record");
+        ReadCustomer(repository.GetCustomerByName("LastName"));
+    }
+    else
+    {
+        Console.WriteLine("Not successful");
+    }
 }
 
 
