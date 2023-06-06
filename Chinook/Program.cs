@@ -21,7 +21,7 @@ static void ReadOneCustomerByName(ICustomerRepository repository)
     ReadCustomer(repository.GetCustomerByName("Wilson"));
 }
 
-static void AddNewCustomer (ICustomerRepository repository)
+static void AddNewRecord (ICustomerRepository repository)
 {
     Customer addNewCustomer = new Customer();
     {
@@ -42,7 +42,7 @@ static void AddNewCustomer (ICustomerRepository repository)
     }
 }
 
-static void UpdateCustomer (ICustomerRepository repository) 
+static void UpdateRecord (ICustomerRepository repository) 
 {
     Customer updateCustomer = new Customer();
     {
@@ -64,6 +64,23 @@ static void UpdateCustomer (ICustomerRepository repository)
     }
 }
 
+static IEnumerable<CustomerCountry> CustomerCountries(ICustomerRepository repository) 
+{
+    IEnumerable<CustomerCountry> customerCountries = repository.CustomersPerCountry();
+    return customerCountries;
+}
+
+static IEnumerable<CustomerSpender> CustomerHighestSpenders(ICustomerRepository repository) 
+{
+    IEnumerable<CustomerSpender> customerHighestSpenders = repository.CustomersHighestSpenders();
+    return customerHighestSpenders;
+}
+
+static IEnumerable<CustomerGenre> CustomerPopularGenres(ICustomerRepository repository) 
+{
+    IEnumerable<CustomerGenre> customerPopularGenres = repository.GetCustomerGenre(5);
+    return customerPopularGenres;
+}
 
 //Methods for the ReadCustomer methods above
 static void ReadCustomers(IEnumerable<Customer> customers) //reads several customers. uses the ReadCustomer method below for reading/printing customers
