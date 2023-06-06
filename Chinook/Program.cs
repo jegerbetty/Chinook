@@ -25,12 +25,12 @@ static void AddNewCustomer (ICustomerRepository repository)
 {
     Customer addNewCustomer = new Customer();
     {
-        FirstName = "FirstName";
-        LastName = "LastName";
-        Country = "Country";
-        PostalCode = "PostalCode";
-        Phone = "Phone";
-        Email = "Email";
+        FirstName = "FirstName",
+        LastName = "LastName",
+        Country = "Country",
+        PostalCode = "PostalCode",
+        Phone = "Phone",
+        Email = "Email"
     };
     if (repository.AddNewCustomer(addNewCustomer)) 
     {
@@ -46,12 +46,12 @@ static void UpdateCustomer (ICustomerRepository repository)
 {
     Customer updateCustomer = new Customer();
     {
-        FirstName = "FirstName";
-        LastName = "LastName";
-        Country = "Country";
-        PostalCode = "PostalCode";
-        Phone = "Phone";
-        Email = "Email";
+        FirstName = "FirstName",
+        LastName = "LastName",
+        Country = "Country",
+        PostalCode = "PostalCode",
+        Phone = "Phone",
+        Email = "Email",
     };
     if (repository.UpdateCustomer(updateCustomer))
     {
