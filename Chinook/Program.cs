@@ -45,9 +45,9 @@ static IEnumerable<Customer> CustomerPage(ICustomerRepository repository)
 /// <summary>
 /// 5. Add a new customer to the database. You also need to add only the fields listed above (our customer object)
 /// </summary>
-static void AddNewRecord (ICustomerRepository repository)
+static void AddNewRecord(ICustomerRepository repository)
 {
-    Customer addNewCustomer = new Customer();
+    Customer addNewCustomer = new Customer()
     {
         FirstName = "FirstName",
         LastName = "LastName",
@@ -56,11 +56,12 @@ static void AddNewRecord (ICustomerRepository repository)
         Phone = "Phone",
         Email = "Email"
     };
-    if (repository.AddNewCustomer(addNewCustomer)) 
+    if (repository.AddNewCustomer(addNewCustomer))
     {
         Console.WriteLine("Successfully inserted record");
         ReadCustomer(repository.GetCustomerByName("LastName"));
-    } else 
+    }
+    else
     {
         Console.WriteLine("Not successful");
     }
@@ -71,7 +72,7 @@ static void AddNewRecord (ICustomerRepository repository)
 /// </summary>
 static void UpdateRecord (ICustomerRepository repository) 
 {
-    Customer updateCustomer = new Customer();
+    Customer updateCustomer = new Customer()
     {
         FirstName = "FirstName",
         LastName = "LastName",
